@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "graphrag-multihop"
+version = "0.1.0"
+description = "Knowledge-graph-augmented retrieval for multi-hop question answering"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Karan Pullagal"}]
+
+[tool.setuptools.packages.find]
+include = ["src*", "eval*"]

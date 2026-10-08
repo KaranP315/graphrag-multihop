@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  neo4j:
+    image: neo4j:5.18-community
+    container_name: graphrag-neo4j
+    ports:
+      - "7474:7474"   # browser
+      - "7687:7687"   # bolt
+    environment:
+      NEO4J_AUTH: neo4j/graphrag123
+      NEO4J_PLUGINS: '[]'
+      # enable vector index support (built-in since 5.13)
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD", "neo4j", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
