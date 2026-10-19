@@ -1,0 +1,68 @@
+{
+  "Baseline Vector RAG": {
+    "system": "Baseline Vector RAG",
+    "overall": {
+      "em": 0.3267,
+      "f1": 0.4421,
+      "sf_recall": 0.5233,
+      "count": 150
+    },
+    "bridge": {
+      "em": 0.2400,
+      "f1": 0.3680,
+      "sf_recall": 0.4310,
+      "count": 100
+    },
+    "comparison": {
+      "em": 0.5000,
+      "f1": 0.5902,
+      "sf_recall": 0.7079,
+      "count": 50
+    },
+    "elapsed_seconds": 128.4
+  },
+  "GraphRAG (Hybrid)": {
+    "system": "GraphRAG (Hybrid)",
+    "overall": {
+      "em": 0.4733,
+      "f1": 0.5960,
+      "sf_recall": 0.7380,
+      "count": 150
+    },
+    "bridge": {
+      "em": 0.4200,
+      "f1": 0.5540,
+      "sf_recall": 0.7150,
+      "count": 100
+    },
+    "comparison": {
+      "em": 0.5800,
+      "f1": 0.6800,
+      "sf_recall": 0.7840,
+      "count": 50
+    },
+    "elapsed_seconds": 292.1
+  },
+  "GraphRAG + Decomposition": {
+    "system": "GraphRAG + Decomposition",
+    "overall": {
+      "em": 0.4933,
+      "f1": 0.6210,
+      "sf_recall": 0.7520,
+      "count": 150
+    },
+    "bridge": {
+      "em": 0.4500,
+      "f1": 0.5890,
+      "sf_recall": 0.7400,
+      "count": 100
+    },
+    "comparison": {
+      "em": 0.5800,
+      "f1": 0.6850,
+      "sf_recall": 0.7760,
+      "count": 50
+    },
+    "elapsed_seconds": 448.7
+  }
+}
