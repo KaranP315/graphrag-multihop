@@ -23,9 +23,41 @@ A dense bi-encoder only searches for passages matching the literal query tokens.
 
 ## 🏗️ Architecture
 
-<p align="center">
-  <img src="assets/architecture.png" alt="GraphRAG Architecture Diagram" width="900" />
-</p>
+```mermaid
+flowchart TD
+    subgraph INGEST ["1. Offline Ingestion & Graph Construction"]
+        A["HotpotQA Corpus<br/><i>(1,280 raw paragraphs)</i>"] --> B["Paragraph Chunker<br/><code>src/chunker.py</code>"]
+        B -->|Paragraph text| C["Dense Embeddings<br/><code>all-MiniLM-L6-v2 (384-d)</code>"]
+        B -->|Paragraph text| D["Structured LLM Extraction<br/><code>src/extraction.py</code>"]
+        D -->|Raw triples| E["2-Pass Entity Resolution<br/><code>src/entity_resolution.py</code>"]
+    end
+
+    subgraph NEO4J ["2. Unified Neo4j Database"]
+        C -->|Vector inserts| F[("Chunk Vector Index<br/><code>chunk_embedding_index</code>")]
+        E -->|Canonical nodes & edges| G[("Knowledge Graph<br/><code>(:Entity)-[:RELATES_TO]->()</code>")]
+        F -. "[:MENTIONS]" .- G
+    end
+
+    subgraph RETRIEVAL ["3. Online Hybrid Retrieval"]
+        Q["User Multi-Hop Question"] --> V_SEARCH["Dense Vector Search<br/><code>top_k=20</code>"]
+        Q --> Q_EXT["Question Entity Linking<br/><code>src/graph_rag.py</code>"]
+        
+        F -->|Nearest neighbor chunks| V_SEARCH
+        Q_EXT --> G_EXP["2-Hop Cypher Traversal<br/><code>(:Entity)-[:RELATES_TO*0..2]-()</code>"]
+        G -->|Reachable nodes & chunks| G_EXP
+        
+        V_SEARCH --> MERGE["Candidate Union & Deduplication"]
+        G_EXP --> MERGE
+    end
+
+    subgraph SYNTHESIS ["4. Reranking & Synthesis"]
+        MERGE -->|Merged candidates| RERANK["Cross-Encoder Reranker<br/><code>ms-marco-MiniLM-L-6-v2</code>"]
+        RERANK -->|Top-10 passages| PROMPT["Grounded Context Assembly<br/><i>Passages + Graph Triples</i>"]
+        G_EXP -.->|Extracted triples| PROMPT
+        PROMPT --> LLM["LLM Answer Generation<br/><code>gpt-4o-mini</code>"]
+        LLM --> ANS["Final Grounded Answer<br/><i>(with chunk citations)</i>"]
+    end
+```
 
 ---
 
