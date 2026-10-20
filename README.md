@@ -23,56 +23,9 @@ A dense bi-encoder only searches for passages matching the literal query tokens.
 
 ## 🏗️ Architecture
 
-```
-                                  ┌────────────────────────┐
-                                  │   Document Paragraphs  │
-                                  └───────────┬────────────┘
-                                              │
-                      ┌───────────────────────┴───────────────────────┐
-                      ▼                                               ▼
-          ┌───────────────────────┐                       ┌───────────────────────┐
-          │ sentence-transformers │                       │ LLM Extraction        │
-          │   (all-MiniLM-L6-v2)  │                       │ (Pydantic Schema)     │
-          └───────────┬───────────┘                       └───────────┬───────────┘
-                      │                                               ▼
-                      │                                   ┌───────────────────────┐
-                      │                                   │ 2-Pass Entity         │
-                      │                                   │ Resolution (31% dedup)│
-                      │                                   └───────────┬───────────┘
-                      ▼                                               ▼
-        ┌───────────────────────────┐                   ┌───────────────────────────┐
-        │  Neo4j Vector Index       │                   │  Neo4j Knowledge Graph    │
-        │  (:Chunk {embedding})     │◀───[:MENTIONS]────│  (:Entity)-[:REL]->()     │
-        └─────────────┬─────────────┘                   └─────────────┬─────────────┘
-                      │                                               │
-══════════════════════╪═══════════════════════════════════════════════╪═════════════════════
-                      │              QUERY PIPELINE                   │
-                      │                                               │
-               ┌──────┴──────┐                                 ┌──────┴──────┐
-               │ Top-K Chunk │                                 │ Entity Link │
-               │ Vector Hits │                                 │ & 2-Hop BFS │
-               └──────┬──────┘                                 └──────┬──────┘
-                      │                                               │
-                      └───────────────────────┬───────────────────────┘
-                                              ▼
-                                 ┌─────────────────────────┐
-                                 │ Union & Deduplication   │
-                                 └────────────┬────────────┘
-                                              ▼
-                                 ┌─────────────────────────┐
-                                 │ Cross-Encoder Reranker  │
-                                 │ (ms-marco-MiniLM-L-6-v2)│
-                                 └────────────┬────────────┘
-                                              ▼
-                                 ┌─────────────────────────┐
-                                 │ LLM Synthesis Prompt    │
-                                 │ (Passages + KG Triples) │
-                                 └────────────┬────────────┘
-                                              ▼
-                                 ┌─────────────────────────┐
-                                 │     Final Answer        │
-                                 └─────────────────────────┘
-```
+<p align="center">
+  <img src="assets/architecture.png" alt="GraphRAG Architecture Diagram" width="900" />
+</p>
 
 ---
 
