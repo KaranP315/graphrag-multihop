@@ -5,8 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Benchmark: HotpotQA](https://img.shields.io/badge/Benchmark-HotpotQA-orange.svg)](https://hotpotqa.github.io/)
 
-> **Resume Bullet:**  
-> *"Built a GraphRAG system combining knowledge graph traversal with vector retrieval, raising multi-hop answer F1 from 36.8% to 55.4% (+18.6%) and supporting-fact recall by 28.4 points over a vector-only baseline on HotpotQA."*
+
 
 ---
 
