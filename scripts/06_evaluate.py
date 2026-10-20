@@ -23,6 +23,9 @@ from pathlib import Path
 # allow imports from project root
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from config import (
     DATA_DIR,
     HOTPOTQA_SAMPLE_SIZE,
